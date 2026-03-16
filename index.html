@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>扫描验真 - 证书查询结果</title>
+    <!-- 引入 Tailwind CSS 进行快速样式排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 FontAwesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 引入 QRCode.js 用于生成二维码 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        /* 模拟公章样式 */
+        .stamp {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 100px;
+            height: 100px;
+            border: 4px solid rgba(220, 38, 38, 0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(220, 38, 38, 0.7);
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            transform: rotate(-15deg);
+            pointer-events: none;
+            user-select: none;
+        }
+        .stamp::after {
+            content: "★";
+            position: absolute;
+            font-size: 30px;
+            top: 20px;
+        }
+        .stamp-text {
+            margin-top: 35px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased text-gray-800">
+
+    <!-- 模拟移动端视图的居中容器 -->
+    <div class="max-w-md mx-auto bg-white min-h-screen shadow-lg relative overflow-hidden">
+        
+        <!-- 头部 -->
+        <header class="bg-blue-600 text-white text-center py-4 relative shadow-md">
+            <h1 class="text-lg font-bold tracking-wider">真伪查询</h1>
+            <p class="text-xs text-blue-200 mt-1">仪器证书防伪追溯平台</p>
+        </header>
+
+        <!-- 验真状态横幅 -->
+        <div class="bg-green-500 text-white px-6 py-5 flex items-center justify-center space-x-3 shadow-inner">
+            <div class="bg-white text-green-500 rounded-full w-10 h-10 flex items-center justify-center text-xl shadow-sm">
+                <i class="fas fa-check"></i>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold tracking-widest">验证通过</h2>
+                <p class="text-sm text-green-100">该证书真实有效</p>
+            </div>
+        </div>
+
+        <!-- 主体信息内容 -->
+        <main class="p-6 relative">
+            <!-- 红色合格公章特效 -->
+            <div class="stamp"><span class="stamp-text">检定合格</span></div>
+
+            <h3 class="text-gray-500 text-sm font-bold border-b-2 border-blue-500 inline-block pb-1 mb-4">
+                <i class="fas fa-file-alt mr-1"></i> 查询结果明细
+            </h3>
+
+            <!-- 信息列表 -->
+            <div class="bg-gray-50 rounded-lg border border-gray-200 p-4 space-y-4 text-sm">
+                <div class="flex justify-between border-b border-dashed border-gray-300 pb-2">
+                    <span class="text-gray-500 w-24 flex-shrink-0">证书编号</span>
+                    <span id="val-id" class="font-mono font-bold text-blue-700 text-right">GD602052602282744</span>
+                </div>
+                <div class="flex justify-between border-b border-dashed border-gray-300 pb-2">
+                    <span class="text-gray-500 w-24 flex-shrink-0">送检单位</span>
+                    <span id="val-company" class="font-semibold text-right">阜新市鸿胜机械有限公司</span>
+                </div>
+                <div class="flex justify-between border-b border-dashed border-gray-300 pb-2">
+                    <span class="text-gray-500 w-24 flex-shrink-0">器具名称</span>
+                    <span id="val-name" class="font-semibold text-right">游标卡尺</span>
+                </div>
+                <div class="flex justify-between border-b border-dashed border-gray-300 pb-2">
+                    <span class="text-gray-500 w-24 flex-shrink-0">型号/规格</span>
+                    <span id="val-model" class="text-right">0-150mm</span>
+                </div>
+                <div class="flex justify-between border-b border-dashed border-gray-300 pb-2">
+                    <span class="text-gray-500 w-24 flex-shrink-0">出厂编号</span>
+                    <span id="val-sn" class="font-mono text-right">230350589</span>
+                </div>
+                <div class="flex justify-between border-b border-dashed border-gray-300 pb-2">
+                    <span class="text-gray-500 w-24 flex-shrink-0">制造厂家</span>
+                    <span id="val-maker" class="text-right">哈量</span>
+                </div>
+                <div class="flex justify-between border-b border-dashed border-gray-300 pb-2">
+                    <span class="text-gray-500 w-24 flex-shrink-0">管理编号</span>
+                    <span id="val-manage" class="font-mono text-right">WA772</span>
+                </div>
+                <div class="flex justify-between border-b border-dashed border-gray-300 pb-2">
+                    <span class="text-gray-500 w-24 flex-shrink-0">检校日期</span>
+                    <span id="val-cal" class="text-right">2026年02月28日</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-500 w-24 flex-shrink-0">有效日期</span>
+                    <span id="val-exp" class="font-bold text-red-600 text-right">2026年08月27日</span>
+                </div>
+            </div>
+
+            <!-- 安全提示 -->
+            <div class="mt-6 bg-blue-50 p-3 rounded text-xs text-blue-800 flex items-start space-x-2">
+                <i class="fas fa-shield-alt mt-0.5 text-blue-500"></i>
+                <p>此页面数据由系统安全加密。仅供仪器溯源与真伪核对使用，请核对实物信息是否与本页面一致。</p>
+            </div>
+        </main>
+
+        <!-- 管理员区域：批量生成系统 (通过 URL 动态生成) -->
+        <div id="admin-area" class="border-t-8 border-gray-200 mt-2 p-6 bg-gray-50 flex flex-col items-center">
+            <h3 class="text-center text-gray-800 font-bold mb-4 text-lg">
+                <i class="fas fa-cog text-blue-500 mr-1"></i> 内部管理：批量发码器
+            </h3>
+            <p class="text-xs text-gray-500 mb-4 text-center">在此处输入任意仪器信息，即可生成独立的防伪网页二维码。<br><span class="text-red-500">提示：普通用户扫码后不会看到此管理工具。</span></p>
+            
+            <div class="w-full space-y-3 mb-4 text-sm">
+                <input id="in-id" type="text" placeholder="证书编号 (如: GD123...)" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+                <input id="in-company" type="text" placeholder="送检单位" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+                <input id="in-name" type="text" placeholder="器具名称" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+                <div class="flex space-x-2">
+                    <input id="in-model" type="text" placeholder="型号/规格" class="w-1/2 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+                    <input id="in-sn" type="text" placeholder="出厂编号" class="w-1/2 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="flex space-x-2">
+                    <input id="in-maker" type="text" placeholder="制造厂家" class="w-1/2 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+                    <input id="in-manage" type="text" placeholder="管理编号" class="w-1/2 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="flex space-x-2">
+                    <input id="in-cal" type="text" placeholder="检校日期 (如: 20260228)" class="w-1/2 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+                    <input id="in-exp" type="text" placeholder="有效日期 (如: 20260827)" class="w-1/2 p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500">
+                </div>
+                <button id="generate-btn" onclick="generateDynamicQR()" class="w-full bg-blue-600 text-white font-bold py-3 rounded shadow hover:bg-blue-700 transition">生成该设备的二维码</button>
+            </div>
+
+            <!-- 二维码显示容器 -->
+            <div id="qrcode" class="p-3 border-2 border-gray-200 rounded-lg shadow-sm bg-white hidden"></div>
+            
+            <p id="qr-tip" class="text-xs text-gray-500 mt-3 text-center hidden">
+                ↑ 长按或右键保存上方二维码 ↑<br>
+                测试：用手机自带相机扫一扫试试！
+            </p>
+        </div>
+
+        <!-- 底部 -->
+        <footer class="bg-gray-100 py-4 text-center text-xs text-gray-400">
+            <p>技术支持：云端计量防伪追溯系统</p>
+        </footer>
+
+    </div>
+
+    <!-- 动态读取与二维码生成逻辑 -->
+    <script>
+        let qrCodeInstance = null;
+
+        // 格式化日期：20260228 -> 2026年02月28日
+        function formatDate(str) {
+            if (!str || str.length !== 8) return str;
+            return str.substring(0,4) + '年' + str.substring(4,6) + '月' + str.substring(6,8) + '日';
+        }
+
+        // 页面加载完成后执行
+        window.onload = function() {
+            // 获取 URL 中的参数
+            const params = new URLSearchParams(window.location.search);
+            
+            // 如果 URL 中带有 id 参数，说明是客户扫码进来的【防伪验真查看模式】
+            if (params.has('id')) {
+                // 读取网址里的数据并替换到页面上
+                document.getElementById("val-id").textContent = params.get('id');
+                document.getElementById("val-company").textContent = params.get('company') || '-';
+                document.getElementById("val-name").textContent = params.get('name') || '-';
+                document.getElementById("val-model").textContent = params.get('model') || '-';
+                document.getElementById("val-sn").textContent = params.get('sn') || '-';
+                document.getElementById("val-maker").textContent = params.get('maker') || '-';
+                document.getElementById("val-manage").textContent = params.get('manage') || '-';
+                document.getElementById("val-cal").textContent = formatDate(params.get('cal')) || '-';
+                document.getElementById("val-exp").textContent = formatDate(params.get('exp')) || '-';
+                
+                // 隐藏底部的“内部管理：批量发码器”
+                document.getElementById("admin-area").style.display = "none";
+            } 
+            // 否则是【管理员发码模式】，显示默认示例数据，保留底部的发码工具
+        };
+
+        // 管理员点击生成二维码
+        function generateDynamicQR() {
+            const id = document.getElementById("in-id").value.trim();
+            const btn = document.getElementById('generate-btn');
+            
+            if (!id) {
+                // 错误提示（代替 alert）
+                const origText = btn.textContent;
+                btn.textContent = "证书编号不能为空！";
+                btn.classList.replace('bg-blue-600', 'bg-red-500');
+                setTimeout(() => {
+                    btn.textContent = origText;
+                    btn.classList.replace('bg-red-500', 'bg-blue-600');
+                }, 2000);
+                return;
+            }
+
+            // 收集所有输入的数据，转码拼接到网址中
+            const params = new URLSearchParams();
+            params.append('id', id);
+            params.append('company', document.getElementById("in-company").value.trim());
+            params.append('name', document.getElementById("in-name").value.trim());
+            params.append('model', document.getElementById("in-model").value.trim());
+            params.append('sn', document.getElementById("in-sn").value.trim());
+            params.append('maker', document.getElementById("in-maker").value.trim());
+            params.append('manage', document.getElementById("in-manage").value.trim());
+            params.append('cal', document.getElementById("in-cal").value.trim());
+            params.append('exp', document.getElementById("in-exp").value.trim());
+
+            // 动态获取当前网页部署的网址
+            // 如果在本地预览，它就是本地路径；如果在 Gitee 上，它就是 Gitee 分配的网址
+            const baseUrl = window.location.origin + window.location.pathname;
+            // 拼接成完整的动态验真链接 (例如: https://xxx.com/page.html?id=123&name=卡尺)
+            const finalUrl = baseUrl + "?" + params.toString();
+
+            // 显示二维码区域
+            const qrContainer = document.getElementById("qrcode");
+            qrContainer.classList.remove("hidden");
+            document.getElementById("qr-tip").classList.remove("hidden");
+
+            // 生成或更新二维码
+            if (qrCodeInstance) {
+                qrCodeInstance.clear();
+                qrCodeInstance.makeCode(finalUrl);
+            } else {
+                qrCodeInstance = new QRCode(qrContainer, {
+                    text: finalUrl,
+                    width: 200,
+                    height: 200,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.L
+                });
+            }
+            
+            // 成功提示
+            const origText = btn.textContent;
+            btn.textContent = "✅ 生成成功！";
+            btn.classList.replace('bg-blue-600', 'bg-green-600');
+            setTimeout(() => {
+                btn.textContent = origText;
+                btn.classList.replace('bg-green-600', 'bg-blue-600');
+            }, 2000);
+
+            // 滚动到底部方便查看二维码
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
